@@ -16,4 +16,36 @@ param (
     [Parameter (Mandatory=$True)]
     [string] $computername
 )
-Get-CIMinstance win32_OperatingSystem -ComputerName $computername| Select-Object -property Caption,BuildNumber,Version
+Get-CIMinstance win32_OperatingSystem -ComputerName $computername|
+Select-Object -property Caption,BuildNumber,Version
+
+Get-CimInstance Win32_Processor -ComputerName $computername |
+Select-Object -Property MaxClockSpeed,DeviceID,Name
+
+Get-CimInstance Win32_NetworkAdapterConfiguration |
+Select-Object -Property IPAddress, IPSubnet, DefaultIPGateway, DHCPEnabled
+
+Get-dnsclientserveraddress |
+Select-Object -Property ServerAddresses
+
+Get-CimInstance Win32_PhysicalMemory |
+Select-Object -Property @{
+label='Capacity (GB)'
+expression={($_.Capacity/1GB).ToString('F2')}
+}
+
+Get-CimInstance Win32_LogicalDisk |
+Where-Object -Property DeviceID -eq 'C:' |
+Select-Object -Property @{
+label='FreeSpace (GB)'
+expression={($_.FreeSpace/1GB).ToString('F2')}
+}
+
+Get-CimInstance Win32_OperatingSystem |
+Select-Object -Property CSName,LastBootUpTime
+
+Get-CimInstance Win32_computersystem |
+Select-Object -Property UserName
+
+Get-CimInstance Win32_Product|
+Select-Object -Property Name,Vendor,Version
