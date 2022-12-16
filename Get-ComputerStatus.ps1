@@ -18,35 +18,44 @@ param (
 )
 
 Get-CIMinstance win32_OperatingSystem -ComputerName $computername|
-select -property Caption,Buildnumber,Version
+select -property Caption,Buildnumber,Version|
+Out-file -FilePath .\report.txt
 
 Get-CimInstance Win32_Processor -ComputerName $computername|
-Select-Object -Property MaxClockSpeed,DeviceID,Name
+Select-Object -Property MaxClockSpeed,DeviceID,Name|
+Out-file -FilePath .\report.txt -Append
 
 Get-CimInstance Win32_NetworkAdapterConfiguration -ComputerName $computername|
-Select-Object -Property IPAddress, IPSubnet, DefaultIPGateway, DHCPEnabled
+Select-Object -Property IPAddress, IPSubnet, DefaultIPGateway, DHCPEnabled|
+Out-file -FilePath .\report.txt -Append
 
 Get-dnsclientserveraddress -cimsession $computername|
-Select-Object -Property ServerAddresses
+Select-Object -Property ServerAddresses|
+Out-file -FilePath .\report.txt -Append
 
 Get-CimInstance Win32_PhysicalMemory -ComputerName $computername|
 Select-Object -Property @{
 label='Capacity (GB)'
 expression={($_.Capacity/1GB).ToString('F2')}
-}
+}|
+Out-file -FilePath .\report.txt -Append
 
 Get-CimInstance Win32_LogicalDisk -ComputerName $computername|
 Where-Object -Property DeviceID -eq 'C:' |
 Select-Object -Property @{
 label='FreeSpace (GB)'
 expression={($_.FreeSpace/1GB).ToString('F2')}
-}
+}|
+Out-file -FilePath .\report.txt -Append
 
 Get-CimInstance Win32_OperatingSystem -ComputerName $computername|
-Select-Object -Property CSName,LastBootUpTime
+Select-Object -Property CSName,LastBootUpTime|
+Out-file -FilePath .\report.txt -Append
 
 Get-CimInstance Win32_computersystem -ComputerName $computername|
-Select-Object -Property UserName
+Select-Object -Property UserName|
+Out-file -FilePath .\report.txt -Append
 
 Get-CimInstance Win32_Product -ComputerName $computername|
-Select-Object -Property Name,Vendor,Version
+Select-Object -Property Name,Vendor,Version|
+Out-file -FilePath .\report.txt -Append
